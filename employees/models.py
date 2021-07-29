@@ -19,9 +19,17 @@ class DailyPerfomance(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     @property
-    def amount_earned(self):
-
-        return
+    def hours_worked(self):
+        c = self.checked_out_at - self.checked_in_at
+        secs = c.seconds
+        hrs = int(secs / 3600)
+        return hrs
+    
+    @property
+    def amount_aerned(self):
+        get_amount = AddEmployer.objects.get(pk = self.Employer.pk)
+        
+        self.hours_worked 
 
     def __str__(self):
         return self.name

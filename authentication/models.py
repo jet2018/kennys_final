@@ -9,9 +9,11 @@ from django.db import models
 
 class AddEmployer(models.Model):
 
-    user = models.ForeignKey(User, verbose_name="Employer",
-                             on_delete=models.CASCADE)
+    user = models.OneToOneField(User,  verbose_name="Employer",
+                                on_delete=models.CASCADE)
     check_in_time = models.TimeField()
+    job_title = models.CharField(max_length=200)
+    user_image = models.ImageField('users', null=True, blank=True)
     check_out_time = models.TimeField()
     date = models.DateField(auto_now_add=True)
     hourly_charge = MoneyField(
