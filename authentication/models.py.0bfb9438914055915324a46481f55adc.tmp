@@ -28,7 +28,5 @@ class AddEmployer(models.Model):
         return self.user.username
 
     class Meta:
-        db_table = ''
-        managed = True
         verbose_name = 'Employer'
         verbose_name_plural = 'Employers'
