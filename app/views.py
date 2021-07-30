@@ -40,6 +40,16 @@ def index(request):
     return HttpResponse(html_template.render(context, request))
 
 
+# uodate/add daily coverage
+def UpdateAddDailyCoverage(request):
+    if request.method == 'POST':
+        todays = DailyPerfomance.objects.get(
+            Employer__user=request.user, date__day=day)
+        todays.daily_coverage = request.POST.get('daily_coverage')
+        todays.save()
+    return redirect("/")
+
+
 @login_required(login_url="/login/")
 def pages(request):
     context = {}

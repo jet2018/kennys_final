@@ -5,7 +5,7 @@ from django.contrib import admin
 
 class AddEmployerAdmin(admin.ModelAdmin):
     fields = ['user', 'check_in_time',
-              'check_out_time', 'hourly_charge', 'job_description']
+              'check_out_time', 'job_title', 'hourly_charge', 'job_description']
     list_display = ['user', 'check_in_time',
                     'check_out_time', 'date', 'hourly_charge']
     search_fields = ['user__username', 'user__first_name',

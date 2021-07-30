@@ -18,7 +18,7 @@ class AddEmployer(models.Model):
     user = models.OneToOneField(User,  verbose_name="Employer",
                                 on_delete=models.CASCADE)
     check_in_time = models.TimeField(null=True, blank=True)
-    job_title = models.CharField(max_length=200, blank=True)
+    job_title = models.CharField(max_length=250, blank=True)
     user_image = models.ImageField('users', null=True, blank=True)
     location = models.CharField(max_length=200, null=True, blank=True)
     phone = PhoneNumberField(null=True, blank=True)

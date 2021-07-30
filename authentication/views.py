@@ -2,7 +2,6 @@
 from django.contrib.auth.decorators import login_required
 from authentication.models import AddEmployer
 from employees.models import DailyPerfomance
-from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, redirect
@@ -103,7 +102,6 @@ def logout(request):
         try:
             check = DailyPerfomance.objects.filter(
                 Employer=emp, date__day=day)
-            print(check)
             daily_check = check[0]
             daily_check.checked_out_at = time
 
