@@ -32,8 +32,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'phonenumber_field',
+    "ckeditor",
     'iprestrict',
     'djmoney',
+    'widget_tweaks',
     'app',  # Enable the inner app
     'employees',  # Enable the inner employees
     'authentication',
@@ -114,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Kampala'
 
 USE_I18N = True
 
@@ -122,13 +124,20 @@ USE_L10N = True
 
 USE_TZ = True
 
+TIME_INPUT_FORMATS = ('%I:%M %p',)
+
 #############################################################
 # SRC: https://devcenter.heroku.com/articles/django-assets
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 STATIC_ROOT = os.path.join(CORE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(CORE_DIR, 'mediafiles')
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
