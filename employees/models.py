@@ -30,7 +30,6 @@ class DailyPerfomance(models.Model):
             c = datetime.combine(date.min, self.checked_out_at) - \
                 datetime.combine(date.min, self.checked_in_at)
             secs = c.seconds
-            print(secs)
             hrs = int(secs/3600)
         return hrs
 
@@ -44,5 +43,4 @@ class DailyPerfomance(models.Model):
     def __str__(self):
         return self.Employer.user.username
 
-    # def get_absolute_url(self):
-    #     return reverse("_detail", kwargs={"pk": self.pk})
+    

@@ -1,5 +1,3 @@
-
-
 from django.contrib.auth.models import User
 from djmoney.models.fields import MoneyField
 from phonenumber_field.modelfields import PhoneNumberField
