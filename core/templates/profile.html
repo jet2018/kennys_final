@@ -25,21 +25,26 @@
                     <div class="col-lg-3 order-lg-2">
                         <div class="card-profile-image">
                             <a href="#">
-                                <img id="profile_pik" src="/static/assets/img/theme/team-4-800x800.jpg" class="rounded-circle">
+                                <img id="previewImg" {% if user.addemployer.user_image %} src="{{ user.addemployer.user_image.url }}" {% else %} src="/static/assets/img/theme/team-4-800x800.jpg" {% endif %} class="rounded-circle">
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                     <div class="d-flex justify-content-between">
+                        <!-- <form action="" method="post"> -->
                         <a id="imageBtn" class="btn btn-sm btn-info mr-4">Update</a>
-                        <input type="file" id="exampleInputImage" name="image" hidden>
-                        <a href="#" class="btn btn-sm btn-default float-right">Message</a>
+                        <form action="{% url 'app_view:upload_image' %}" enctype="multipart/form-data" id="imageForm" method="post">
+                            {% csrf_token %}
+                            <input type="file" onchange="previewFile(this);" id="exampleInputImage" name="image" hidden>
+                        </form>
+                        <a type="submit" onclick="TriggerImageUpload()" id="submitImageBtn" class="btn btn-sm btn-default float-right d-none">Confirm</a>
+                        <!-- </form> -->
                     </div>
                 </div>
                 <div class="card-body pt-0 pt-md-4">
                     <div class="row">
-                        <div class="col">
+                        <!-- <div class="col">
                             <div class="card-profile-stats d-flex justify-content-center mt-md-5">
                                 <div>
                                     <span class="heading">22</span>
@@ -54,8 +59,9 @@
                                     <span class="description">Comments</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
+                    <br>
                     <div class="text-center">
                         <h3>
                             {{ request.user.username }}
@@ -64,14 +70,15 @@
                             {{ request.user.email }}
                         </div>
                         <div class="h5 mt-4">
-                            <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+                            <i class="ni business_briefcase-24 mr-2"></i>{{ user.addemployer.job_title}}
                         </div>
-                        <div>
+                        <!-- <div>
                             <i class="ni education_hat mr-2"></i>University of Computer Science
-                        </div>
-                        <hr class="my-4" />
+                        </div> -->
+                        <!-- <hr class="my-4" />
                         <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
-                        <a href="#">Show more</a>
+                        <a href="#">Show more</a> -->
+                        <!-- Yesterday's performance -->
                     </div>
                 </div>
             </div>
@@ -89,20 +96,21 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form>
-                        <h6 class="heading-small text-muted mb-4">User information</h6>
+                    <h6 class="heading-small text-muted mb-4">User information</h6>
+                    <form id="user_info" method="POST" action="{% url 'app_view:user_update' %}">
+                        {% csrf_token %}
                         <div class="pl-lg-4">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-username">Username</label>
-                                        <input type="text" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="{{ request.user.username }}">
+                                        <input type="text" name="username" id="input-username" class="form-control form-control-alternative" placeholder="Username" value="{{ request.user.username }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-email">Email address</label>
-                                        <input type="email" id="input-email" class="form-control form-control-alternative" placeholder="{{ request.user.email }}">
+                                        <input type="email" name="email" id="input-email" class="form-control form-control-alternative" value="{{ request.user.email }}">
                                     </div>
                                 </div>
                             </div>
@@ -110,59 +118,79 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-first-name">First name</label>
-                                        <input type="text" id="input-first-name" class="form-control form-control-alternative">
+                                        <input type="text" name="first_name" value="{{user.first_name}}" id="input-first-name" class="form-control form-control-alternative">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="input-last-name">Last name</label>
-                                        <input type="text" id="input-last-name" class="form-control form-control-alternative">
+                                        <input type="text" name="last_name" value="{{user.last_name}}" id="input-last-name" class="form-control form-control-alternative">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <hr class="my-4" />
-                        <!-- Address -->
-                        <h6 class="heading-small text-muted mb-4">Contact information</h6>
+                        <button type="submit" id="submit_user_info" class="col btn btn-sm btn-dribbble">Update</button>
+                    </form>
+
+                    <hr class="my-4" />
+                    <!-- Address -->
+                    <form id="contact_info" action="{% url 'app_view:user_phone' %}" method="POST">
+                        {% csrf_token %}
+                        <h6 class="heading-small text-muted mb-4">Other information</h6>
                         <div class="pl-lg-4">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-address">Address</label>
-                                        <input id="input-address" class="form-control form-control-alternative" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                                        <label class="form-control-label" for="input-address">Full Address</label>
+                                        <input id="input-address" name="address" class="form-control form-control-alternative" placeholder="Full Address" value="{{ user.addemployer.location }}" type="text">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-city">City</label>
-                                        <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="New York">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-country">Country</label>
-                                        <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="United States">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-country">Postal code</label>
-                                        <input type="number" id="input-postal-code" class="form-control form-control-alternative" placeholder="Postal code">
+                                        <label class="form-control-label" for="input-address">Phone </label>
+                                        <input id="input-phone" name="phone" class="form-control form-control-alternative" placeholder="+256 788111000" value="{{ user.addemployer.phone }}" type="tel">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <hr class="my-4" />
-                        <!-- Description -->
-                        <h6 class="heading-small text-muted mb-4">About me</h6>
+                        <button type="submit" id="btn_contact_info" class="col btn btn-sm btn-dribbble">Update</button>
+                    </form>
+                    <hr class="my-4" />
+                    <!-- Description -->
+                    <form action="{% url 'app_view:user_job_title' %}" method="POST" id="job_form">
+                        {% csrf_token %}
+                        <h6 class="heading-small text-muted mb-4">About Job</h6>
                         <div class="pl-lg-4">
                             <div class="form-group">
-                                <label>About Me</label>
-                                <textarea rows="4" class="form-control form-control-alternative" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                                <label>Update your job time</label>
+                                <textarea rows="4" name="job_title" class="form-control form-control-alternative" placeholder="A few words about your job title ...">{{user.addemployer.job_title}}</textarea>
                             </div>
                         </div>
+                        <button type="submit" id="btn_update_job_title" class="col btn btn-sm btn-dribbble">Update</button>
+                    </form>
+
+                    <hr class="my-4" />
+                    <!-- passwords -->
+                    <form action="{% url 'app_view:passwprd_reset' %}" method="POST" id="password_form">
+                        {% csrf_token %}
+                        <h6 class="heading-small text-muted mb-4">Security</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-address">Old password</label>
+                                        <input id="input-address" name="old_password" class="form-control form-control-alternative" placeholder="Old password" type="password">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="input-address">New password </label>
+                                        <input id="input-phone" name="new_password" class="form-control form-control-alternative" placeholder="New password" type="password">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn_change_password" class="col btn btn-sm btn-dribbble">Update</button>
                     </form>
                 </div>
             </div>
@@ -178,7 +206,162 @@
 <!-- Specific JS goes HERE -->
 {% block javascripts %}
 <script>
+    $('#contact_info').on('submit', function(e) {
+        e.preventDefault()
+        $('#btn_contact_info').text('Updating, please wait...')
+        let mydata = $(this).serialize()
+        let myurl = $(this).attr('action')
+
+        $.ajax({
+            data: mydata,
+            url: myurl,
+            type: 'POST',
+            dataType: 'json',
+            success: function(res) {
+                $('#btn_contact_info').text('Updated successfully').addClass('bg-success')
+                setTimeout(function() {
+                    $('#btn_contact_info').removeClass("bg-success").text('Update')
+                }, 5000)
+            }
+
+        })
+    })
+
+    $('#job_form').on('submit', function(e) {
+        e.preventDefault()
+        $('#btn_update_job_title').text('Updating, please wait...')
+        let mydata = $(this).serialize()
+        let myurl = $(this).attr('action')
+
+        $.ajax({
+            data: mydata,
+            url: myurl,
+            type: 'POST',
+            dataType: 'json',
+            success: function(res) {
+                $('#btn_update_job_title').text('Updated successfully').addClass('bg-success')
+                setTimeout(function() {
+                    $('#btn_update_job_title').removeClass("bg-success").text('Update')
+                }, 5000)
+            }
+
+        })
+    })
+    $('#user_info').on('submit', function(e) {
+        e.preventDefault()
+        $('#submit_user_info').text('Updating, please wait...')
+        let mydata = $(this).serialize()
+        let myurl = $(this).attr('action')
+
+        $.ajax({
+            data: mydata,
+            url: myurl,
+            type: 'POST',
+            dataType: 'json',
+            success: function(res) {
+                $('#submit_user_info').text('Updated successfully').addClass('bg-success')
+                setTimeout(function() {
+                    $('#submit_user_info').removeClass("bg-success").text('Update')
+                }, 5000)
+            }
+
+        })
+    })
+
+
+    $('#password_form').on('submit', function(e) {
+            e.preventDefault()
+                // $('.error').removeClass("alert alert-warning").addClass("d-none")
+            let mydata = $(this).serialize()
+            let myurl = $(this).attr('action')
+
+            $.ajax({
+                data: mydata,
+                url: myurl,
+                type: 'POST',
+                dataType: 'json',
+                beforesend: function() {
+                    $('#btn_change_password').text('Please wait...')
+                },
+                success: function(response) {
+                    if (response.code) {
+                        $('#btn_change_password').addClass("btn-success").removeClass("btn-danger").text(response.message)
+                        window.location.href = '/login'
+                    } else {
+                        $('#btn_change_password').addClass("btn-danger").removeClass("btn-success").text(response.message)
+                    }
+                },
+                completed: function() {
+                    $('#btn_change_password').text('Update').removeClass('btn-success btn-danger')
+                    $('#password_form').trigger('reset')
+                }
+            })
+
+        })
+        // trigger the image upload
     $('#imageBtn').on('click', function(e) {
+        // alert("am clicked")
         $('#exampleInputImage').trigger('click')
+    })
+
+    function TriggerImageUpload() {
+        $('#imageForm').trigger('submit')
+    }
+
+
+
+    $('#imageForm').on('submit', function(e) {
+        $('#submitImageBtn').text('Uploading...')
+        e.preventDefault()
+
+        let url1 = $(this).attr('action')
+        formdata = new FormData(this)
+        $.ajax({
+            url: url1,
+            data: formdata,
+            type: 'POST',
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(res) {
+                $('#submitImageBtn').text(res.message).addClass('bg-warning').removeClass('d-none')
+                setTimeout(function() {
+                    $('#submitImageBtn').addClass("d-none")
+                }, 5000)
+
+
+            }
+        })
+    })
+
+
+
+
+    function previewFile(input) {
+        var file = $("input[type=file]").get(0).files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                // $("#previewImg").removeClass('d-none');
+                // $('#clear').removeClass('d-none')
+                $("#previewImg").attr("src", reader.result);
+            }
+
+            reader.readAsDataURL(file);
+            $('#submitImageBtn').removeClass('d-none').addClass('text-light')
+
+        }
+    }
+
+
+    // $(document).on('click')
+
+    // clear the image
+    $('#clear').click(function() {
+        $(this).addClass('d-none')
+        $('#previewImg').val('')
+        $('#exampleInputImage').val('')
+        $('#previewImg').addClass('d-none')
     })
 </script>{% endblock javascripts %}

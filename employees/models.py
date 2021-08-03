@@ -42,5 +42,3 @@ class DailyPerfomance(models.Model):
 
     def __str__(self):
         return self.Employer.user.username
-
-    
