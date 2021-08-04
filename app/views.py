@@ -19,18 +19,16 @@ from django.shortcuts import render
 
 
 now = datetime.datetime.now()
-
+# sweek = calendar.setlastweekday(calendar.FRIDAY)
 today = now.date()
 time = now.time()
 year = now.year
 month = now.month
 day = now.day
-
-
-class PaymentsListView(ListView):
-    model = DailyPerfomance
-    template_name = "payments.html"
-    context_object_name = "performances"
+get_week = datetime.datetime.strptime(
+    str(datetime.date.today()), "%Y-%m-%d")
+# getting the current week of the year
+week_of_year = int(get_week.strftime("%V"))
 
 
 class ProfileView(TemplateView):
@@ -69,18 +67,68 @@ def ResetPasword(request):
     return redirect(request.user.username+'/profile')
 
 
-class PerformanceView(ListView):
-    model = DailyPerfomance
-    template_name = "performance.html"
-    context_object_name = "performances"
+def PaymentsListView(request):
+    last_month = DailyPerfomance.objects.filter(
+        Employer__user=request.user, date__month=month-1)
+    daily_all = DailyPerfomance.objects.filter(
+        Employer__user=request.user)
+    last_year = DailyPerfomance.objects.filter(
+        Employer__user=request.user, date__year=int(year-1))
+    this_month = DailyPerfomance.objects.filter(
+        Employer__user=request.user, date__month=month)
+    last_week = DailyPerfomance.objects.filter(
+        Employer__user=request.user, date__week=int(week_of_year-1))
+    # get the total of the last amount
+    last_month_all = []
+    for lmonth in last_month:
+        last_month_all.append(
+            int(lmonth.Employer.hourly_charge.amount)*lmonth.hours_worked)
+    total_last_month_all = sum(last_month_all)
 
-    # redefining the queeryset to pick where the month is the current one
+    # get the total of the last year
+    this_month_all = []
+    for tmonth in this_month:
+        this_month_all.append(
+            int(tmonth.Employer.hourly_charge.amount)*tmonth.hours_worked)
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = DailyPerfomance.objects.filter(
-            Employer__user=self.request.user, date__month=month)
-        return queryset
+    total_this_month_all = sum(this_month_all)
+
+    # get the total of the last year
+    last_year_all = []
+    for lyear in last_year:
+        last_year_all.append(
+            int(lyear.Employer.hourly_charge.amount)*lyear.hours_worked)
+
+    total_last_year_all = sum(last_year_all)
+
+    # get the total of the last year
+    last_week_all = []
+    for lweek in last_week:
+        last_week_all.append(
+            int(lweek.Employer.hourly_charge.amount)*lweek.hours_worked)
+    total_last_week_all = sum(last_week_all)
+
+    return render(request, 'payments.html', {
+        'last_month': total_last_month_all,
+        'last_year': total_last_year_all,
+        'daily': daily_all,
+        'this_month': total_this_month_all,
+        'last_week': total_last_week_all
+    })
+
+
+# class PerformanceView(ListView):
+#     model = DailyPerfomance
+#     template_name = "performance.html"
+#     context_object_name = "performances"
+
+#     # redefining the queeryset to pick where the month is the current one
+
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         queryset = DailyPerfomance.objects.filter(
+#             Employer__user=self.request.user, date__month=month)
+#         return queryset
 
 
 def UserUpdate(request):
@@ -135,8 +183,12 @@ def index(request):
     context['segment'] = 'index'
     context['form'] = MyCoverageForm()
     context['emp'] = AddEmployer.objects.get(user=request.user)
-    context['todays'] = DailyPerfomance.objects.get(
-        Employer__user=request.user, date__day=day)
+    try:
+        context['todays'] = DailyPerfomance.objects.get(
+            Employer__user=request.user, date__day=day)
+    except DailyPerfomance.DoesNotExist:
+        context['todays'] = None
+
     try:
         context['yesto'] = DailyPerfomance.objects.get(
             Employer__user=request.user, date__day=day-1)

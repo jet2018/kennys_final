@@ -12,7 +12,8 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),          # Django admin route
     path("", include("authentication.urls")),  # Auth routes - login
     path("", include("app.urls")),             # UI Kits Html files
-    path('ckeditor/', include('ckeditor_uploader.urls'))
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    # path("iprestrict/", include('iprestrict.urls', namespace='iprestrict')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

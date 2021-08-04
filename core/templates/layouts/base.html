@@ -33,13 +33,40 @@
 
     {% include "includes/sidenav.html" %}
 
-    <div class="main-content">
-
+    <div class="main-content" data-time="{{ user.addemployer.check_out_time }}">
+        <a href="{% url 'logout' %}" hidden id="logout_now"></a>
         {% include "includes/navigation.html" %} {% block content %}{% endblock content %}
 
     </div>
 
     {% include "includes/scripts.html" %}
+    <script>
+        function formatAMPM(date) {
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+        }
+
+        let now = formatAMPM(new Date);
+        let req = $('.main-content').data('time')
+        console.log(now.toString())
+        console.log(req.toString())
+
+        setInterval(() => {
+            if (now === req) {
+                $('#logout_now').trigger('click')
+                console.log("am counting")
+            }
+        }, 1000);
+        // setTimeout(() => {
+
+        // }, time)
+    </script>
 
     <!-- Specific JS goes HERE -->
     {% block javascripts %}{% endblock javascripts %}

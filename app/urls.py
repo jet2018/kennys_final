@@ -11,7 +11,7 @@ urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
-    path('payments', views.PaymentsListView.as_view(), name="payments"),
+    path('payments', views.PaymentsListView, name="payments"),
     path('<str:username>/profile',
          views.ProfileView.as_view(), name="profile"),
     path('upload_image', views.UploadProfilePik,
@@ -20,7 +20,6 @@ urlpatterns = [
     path('user_update', views.UserUpdate, name="user_update"),
     path('user_job_title', views.UserJobTitle, name="user_job_title"),
     path('user_phone', views.UserPhoneAndAddress, name="user_phone"),
-    path('performance', views.PerformanceView.as_view(), name="performance"),
     path('daily_coverage', views.UpdateAddDailyCoverage, name="daily_coverage"),
 
 

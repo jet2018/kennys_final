@@ -46,7 +46,7 @@ def login_view(request):
                 except User.DoesNotExist:
                     msg = 'User does not exist'
                 # if they have, then just log them in.
-                if cur_user_instance.last_login.date() == today:
+                if cur_user_instance.last_login and cur_user_instance.last_login.date() == today:
                     msg = "Welcome back "+username
                     login(request, user)
                 # otherwise, record their login time
